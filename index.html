@@ -120,8 +120,8 @@
 <script>
   // SETUP: Replace these two placeholders with your Supabase Project URL and anon/publishable key.
   // Never put your service_role key or database password in this file.
-  const SUPABASE_URL = "https://bkkityifiuvotwirwcqz.supabase.co";
-const SUPABASE_ANON_KEY = "আপনার কপি করা Publishable key";
+const SUPABASE_URL = "https://bkkityifiuvotwirwcqz.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_rGH4uYPFyQlY0Kkd-LCYkA_1bngDwRS";
   let db = null;
   const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("PASTE_") && !SUPABASE_ANON_KEY.includes("PASTE_");
   if (configured && window.supabase) db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
