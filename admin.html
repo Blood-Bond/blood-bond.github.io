@@ -1,25 +1,197 @@
-<!doctype html>
-<html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#991b1b"><title>Blood Bond Admin</title>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#fff7f7;color:#1f2937;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}header{background:#991b1b;color:white;padding:20px}.wrap{max-width:850px;margin:auto;padding:18px}h1{font-size:23px;margin:0}h2{font-size:20px;color:#991b1b;margin:0 0 12px}.card{background:white;border:1px solid #fee2e2;border-radius:15px;padding:18px;margin:14px 0}label{display:block;font-weight:700;margin:12px 0 5px}input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font:inherit}button{border:0;border-radius:9px;padding:11px 15px;font-weight:800;font-size:14px;cursor:pointer}.primary{background:#991b1b;color:white;width:100%;margin-top:14px}.approve{background:#166534;color:white}.reject{background:#991b1b;color:white}.logout{background:#e5e7eb;color:#111827}.muted{color:#64748b;font-size:13px}.msg{padding:11px;border-radius:9px;margin-top:12px;background:#fff7ed;color:#9a3412;overflow-wrap:anywhere}.ok{background:#f0fdf4;color:#166534}.bad{background:#fef2f2;color:#991b1b}.item{border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin:12px 0}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}.tag{display:inline-block;background:#fee2e2;color:#991b1b;border-radius:7px;padding:3px 8px;font-weight:900}.hidden{display:none}a{color:#991b1b}
-</style></head><body>
-<header><div class="wrap"><h1>🩸 Blood Bond — Admin</h1><div>রক্তদাতার আবেদন যাচাই ও অনুমোদন</div></div></header>
-<main class="wrap">
-<section id="loginCard" class="card"><h2>অ্যাডমিন লগইন</h2><p class="muted">শুধু Supabase-এ তৈরি করা অনুমোদিত অ্যাডমিন অ্যাকাউন্ট দিয়ে প্রবেশ করুন।</p>
-<form id="loginForm"><label>অ্যাডমিন ইমেইল</label><input name="email" type="email" required autocomplete="username"><label>পাসওয়ার্ড</label><input name="password" type="password" required autocomplete="current-password"><button class="primary" type="submit">লগইন</button></form><div id="loginMsg" class="msg hidden" aria-live="polite"></div></section>
-<section id="dashboard" class="hidden"><div class="row" style="justify-content:space-between"><h2>অপেক্ষমাণ রক্তদাতার আবেদন</h2><button id="logoutBtn" class="logout">লগআউট</button></div><div id="dashMsg" class="msg" aria-live="polite">তথ্য লোড হচ্ছে…</div><div id="donorList"></div></section>
-<div class="muted">Blood Bond Admin · অ্যাডমিন অনুমতি ডেটাবেসে যাচাই করা হয়।</div></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
-const SUPABASE_URL="https://bkkityifiuvotwirwcqz.supabase.co";
-const SUPABASE_ANON_KEY="sb_publishable_rGH4uYPFyQlY0Kkd-LCYkA_1bngDwRS";
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-const $=id=>document.getElementById(id);
-function msg(id,text,kind="msg"){const el=$(id);el.className="msg "+kind;el.textContent=text;}
-function showDashboard(on){$("loginCard").classList.toggle("hidden",on);$("dashboard").classList.toggle("hidden",!on);}
-async function isAdmin(){const {data:userData,error:userError}=await db.auth.getUser();if(userError||!userData.user)throw userError||new Error("লগইন নেই");const {data,error}=await db.from("admin_users").select("user_id").eq("user_id",userData.user.id).maybeSingle();if(error)throw error;return !!data;}
-async function loadDonors(){msg("dashMsg","আবেদন লোড হচ্ছে…");const {data,error}=await db.from("donors").select("id,name,phone,whatsapp,blood_group,district,upazila,created_at,status").eq("status","pending").order("created_at",{ascending:true});if(error){msg("dashMsg","আবেদন দেখা যায়নি: "+error.message,"bad");return;}$("donorList").innerHTML="";if(!data.length){msg("dashMsg","এখন কোনো অপেক্ষমাণ আবেদন নেই।","ok");return;}msg("dashMsg",`মোট ${data.length}টি আবেদন অপেক্ষমাণ।`,"ok");data.forEach(d=>{const box=document.createElement("article");box.className="item";const name=document.createElement("strong");name.textContent=d.name||"নাম নেই";const blood=document.createElement("span");blood.className="tag";blood.textContent=d.blood_group||"";const info=document.createElement("p");info.textContent=`ফোন: ${d.phone||"নেই"} · WhatsApp: ${d.whatsapp||"নেই"}`;const area=document.createElement("p");area.textContent=`এলাকা: ${[d.upazila,d.district].filter(Boolean).join(", ")}`;const date=document.createElement("p");date.className="muted";date.textContent="জমার তারিখ: "+(d.created_at?new Date(d.created_at).toLocaleString("bn-BD"):"");const actions=document.createElement("div");actions.className="row";const yes=document.createElement("button");yes.className="approve";yes.textContent="অনুমোদন করুন";yes.addEventListener("click",()=>updateStatus(d.id,"approved"));const no=document.createElement("button");no.className="reject";no.textContent="বাতিল করুন";no.addEventListener("click",()=>updateStatus(d.id,"rejected"));actions.append(yes,no);box.append(name,document.createTextNode(" "),blood,info,area,date,actions);$("donorList").appendChild(box);});}
-async function updateStatus(id,status){const {error}=await db.from("donors").update({status}).eq("id",id);if(error){msg("dashMsg","পরিবর্তন করা যায়নি: "+error.message,"bad");return;}msg("dashMsg",status==="approved"?"আবেদন অনুমোদিত হয়েছে।":"আবেদন বাতিল করা হয়েছে।","ok");await loadDonors();}
-$("loginForm").addEventListener("submit",async e=>{e.preventDefault();const f=new FormData(e.currentTarget);msg("loginMsg","লগইন যাচাই হচ্ছে…");const {error}=await db.auth.signInWithPassword({email:f.get("email"),password:f.get("password")});if(error){msg("loginMsg","লগইন হয়নি: "+error.message,"bad");return;}try{if(!(await isAdmin())){await db.auth.signOut();msg("loginMsg","এই অ্যাকাউন্টকে অ্যাডমিন অনুমতি দেওয়া হয়নি।","bad");return;}showDashboard(true);await loadDonors();}catch(err){await db.auth.signOut();msg("loginMsg","অ্যাডমিন যাচাই হয়নি: "+err.message,"bad");}});
-$("logoutBtn").addEventListener("click",async()=>{await db.auth.signOut();showDashboard(false);$("loginForm").reset();});
-(async()=>{const {data}=await db.auth.getSession();if(data.session){try{if(await isAdmin()){showDashboard(true);await loadDonors();}else await db.auth.signOut();}catch(e){await db.auth.signOut();}}})();
-</script></body></html>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>রক্তের বন্ধন - এডমিন</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,"Noto Sans Bengali",sans-serif;background:#f5f6f8;color:#202124}
+    header{background:#9f1239;color:white;padding:22px 16px;text-align:center}
+    header h1{margin:0 0 6px;font-size:25px}
+    header p{margin:0;font-size:14px}
+    main{max-width:900px;margin:22px auto;padding:0 14px}
+    .panel,.card{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px #00000008}
+    h2{font-size:19px;margin:0 0 14px}
+    h3{font-size:17px;margin:0 0 9px}
+    input{display:block;width:100%;padding:12px;margin:9px 0;border:1px solid #cbd5e1;border-radius:8px;font-size:16px}
+    button{border:0;border-radius:8px;padding:11px 15px;font-size:15px;font-weight:600;cursor:pointer;margin:5px 5px 3px 0}
+    .primary{background:#9f1239;color:white}
+    .approve{background:#15803d;color:white}
+    .reject{background:#b91c1c;color:white}
+    .complete{background:#0369a1;color:white}
+    .muted{color:#64748b;font-size:14px}
+    .status{font-weight:700;color:#9f1239}
+    .hidden{display:none}
+    .section-title{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+    .details{line-height:1.8;font-size:15px}
+    .empty{padding:16px;background:#f8fafc;border-radius:8px;color:#475569}
+    #message{margin-top:10px;font-size:14px;white-space:pre-wrap}
+    @media(max-width:520px){header h1{font-size:22px}.panel,.card{padding:13px}}
+  </style>
+</head>
+<body>
+<header>
+  <h1>রক্তের বন্ধন - এডমিন</h1>
+  <p>রক্তদাতা ও জরুরি রক্তের অনুরোধ যাচাই ও পরিচালনা</p>
+</header>
+<main>
+  <section id="loginBox" class="panel">
+    <h2>অ্যাডমিন লগইন</h2>
+    <form id="loginForm">
+      <input id="email" type="email" placeholder="আপনার ইমেইল" autocomplete="username" required>
+      <input id="password" type="password" placeholder="পাসওয়ার্ড" autocomplete="current-password" required>
+      <button class="primary" type="submit">লগইন করুন</button>
+    </form>
+    <div id="loginMessage" role="status"></div>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <div class="panel section-title">
+      <div><h2 style="margin-bottom:4px">অ্যাডমিন ড্যাশবোর্ড</h2><div class="muted">অ্যাডমিন অনুমতি ডেটাবেসে যাচাই করা হয়।</div></div>
+      <button id="logoutBtn">লগআউট</button>
+    </div>
+
+    <section class="panel">
+      <div class="section-title"><h2>অপেক্ষমাণ রক্তদাতার আবেদন</h2><span id="donorCount" class="status"></span></div>
+      <div id="donorList"><div class="muted">লোড হচ্ছে...</div></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title"><h2>জরুরি রক্তের অনুরোধ</h2><span id="requestCount" class="status"></span></div>
+      <div id="requestList"><div class="muted">লোড হচ্ছে...</div></div>
+    </section>
+  </section>
+  <div id="message" role="status"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://bkkityifiuvotwirwcqz.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_rGH4uYPFyQlY0Kkd-LCYkA_1bngDwRS";
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const $ = (id) => document.getElementById(id);
+  const escapeHtml = (value) => String(value ?? "—").replace(/[&<>"']/g, ch => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[ch]));
+
+  async function checkAdmin(user) {
+    const { data, error } = await db.from("admin_users").select("user_id").eq("user_id", user.id).maybeSingle();
+    if (error) throw error;
+    if (!data) throw new Error("এই অ্যাকাউন্টের অ্যাডমিন অনুমতি নেই।");
+  }
+
+  async function showDashboard(user) {
+    await checkAdmin(user);
+    $("loginBox").classList.add("hidden");
+    $("dashboard").classList.remove("hidden");
+    await loadAll();
+  }
+
+  async function loadAll() {
+    $("donorList").innerHTML = '<div class="muted">লোড হচ্ছে...</div>';
+    $("requestList").innerHTML = '<div class="muted">লোড হচ্ছে...</div>';
+
+    const [donorsResult, requestsResult] = await Promise.all([
+      db.from("donors").select("id,name,phone,whatsapp,blood_group,district,upazila,created_at,status").eq("status","pending").order("created_at",{ascending:false}),
+      db.from("blood_requests").select("id,patient_name,contact_phone,blood_group,units,district,upazila,hospital,needed_at,details,created_at,status").eq("status","pending").order("created_at",{ascending:false})
+    ]);
+
+    if (donorsResult.error) $("donorList").innerHTML = `<div class="empty">রক্তদাতার আবেদন লোড করা যায়নি: ${escapeHtml(donorsResult.error.message)}</div>`;
+    else renderDonors(donorsResult.data || []);
+
+    if (requestsResult.error) $("requestList").innerHTML = `<div class="empty">রক্তের অনুরোধ লোড করা যায়নি: ${escapeHtml(requestsResult.error.message)}</div>`;
+    else renderRequests(requestsResult.data || []);
+  }
+
+  function dateText(value) {
+    if (!value) return "উল্লেখ নেই";
+    const d = new Date(value);
+    return isNaN(d.getTime()) ? escapeHtml(value) : d.toLocaleString("bn-BD");
+  }
+
+  function renderDonors(rows) {
+    $("donorCount").textContent = `মোট ${rows.length}টি অপেক্ষমাণ`;
+    if (!rows.length) { $("donorList").innerHTML = '<div class="empty">এখন কোনো অপেক্ষমাণ রক্তদাতার আবেদন নেই।</div>'; return; }
+    $("donorList").innerHTML = rows.map(d => `
+      <article class="card">
+        <h3>${escapeHtml(d.name)} — ${escapeHtml(d.blood_group)}</h3>
+        <div class="details">
+          ফোন: ${escapeHtml(d.phone)}<br>
+          WhatsApp: ${escapeHtml(d.whatsapp || "নেই")}<br>
+          এলাকা: ${escapeHtml(d.upazila)}, ${escapeHtml(d.district)}<br>
+          জমার তারিখ: ${dateText(d.created_at)}
+        </div>
+        <button class="approve" data-donor-action="approved" data-id="${escapeHtml(d.id)}">অনুমোদন করুন</button>
+        <button class="reject" data-donor-action="rejected" data-id="${escapeHtml(d.id)}">বাতিল করুন</button>
+      </article>`).join("");
+  }
+
+  function renderRequests(rows) {
+    $("requestCount").textContent = `মোট ${rows.length}টি অপেক্ষমাণ`;
+    if (!rows.length) { $("requestList").innerHTML = '<div class="empty">এখন কোনো অপেক্ষমাণ জরুরি রক্তের অনুরোধ নেই।</div>'; return; }
+    $("requestList").innerHTML = rows.map(r => `
+      <article class="card">
+        <h3>${escapeHtml(r.patient_name)} — ${escapeHtml(r.blood_group)}</h3>
+        <div class="details">
+          যোগাযোগ: ${escapeHtml(r.contact_phone)}<br>
+          রক্তের পরিমাণ: ${escapeHtml(r.units)} ইউনিট<br>
+          এলাকা: ${escapeHtml(r.upazila)}, ${escapeHtml(r.district)}<br>
+          হাসপাতাল: ${escapeHtml(r.hospital)}<br>
+          রক্ত লাগবে: ${dateText(r.needed_at)}<br>
+          বিস্তারিত: ${escapeHtml(r.details || "নেই")}<br>
+          অনুরোধ জমার তারিখ: ${dateText(r.created_at)}
+        </div>
+        <button class="complete" data-request-action="completed" data-id="${escapeHtml(r.id)}">সম্পন্ন হয়েছে</button>
+        <button class="reject" data-request-action="rejected" data-id="${escapeHtml(r.id)}">বাতিল করুন</button>
+      </article>`).join("");
+  }
+
+  async function updateStatus(table, id, status, kind) {
+    const confirmText = kind === "donor"
+      ? (status === "approved" ? "এই রক্তদাতাকে অনুমোদন করবেন?" : "এই রক্তদাতার আবেদন বাতিল করবেন?")
+      : (status === "completed" ? "এই রক্তের অনুরোধ সম্পন্ন হিসেবে চিহ্নিত করবেন?" : "এই রক্তের অনুরোধ বাতিল করবেন?");
+    if (!window.confirm(confirmText)) return;
+    const { error } = await db.from(table).update({status}).eq("id",id);
+    if (error) { $("message").textContent = "আপডেট করা যায়নি: " + error.message; return; }
+    $("message").textContent = "সফলভাবে আপডেট হয়েছে।";
+    await loadAll();
+  }
+
+  $("loginForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    $("loginMessage").textContent = "লগইন হচ্ছে...";
+    const { data, error } = await db.auth.signInWithPassword({email:$("email").value.trim(), password:$("password").value});
+    if (error) { $("loginMessage").textContent = "লগইন হয়নি: " + error.message; return; }
+    try { await showDashboard(data.user); $("loginMessage").textContent = ""; }
+    catch (e) { await db.auth.signOut(); $("loginMessage").textContent = e.message; }
+  });
+
+  $("logoutBtn").addEventListener("click", async () => {
+    await db.auth.signOut();
+    $("dashboard").classList.add("hidden");
+    $("loginBox").classList.remove("hidden");
+    $("password").value = "";
+    $("message").textContent = "লগআউট হয়েছে।";
+  });
+
+  $("donorList").addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-donor-action]");
+    if (button) updateStatus("donors", button.dataset.id, button.dataset.donorAction, "donor");
+  });
+  $("requestList").addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-request-action]");
+    if (button) updateStatus("blood_requests", button.dataset.id, button.dataset.requestAction, "request");
+  });
+
+  (async () => {
+    const { data: { session } } = await db.auth.getSession();
+    if (session?.user) {
+      try { await showDashboard(session.user); }
+      catch (e) { await db.auth.signOut(); $("loginMessage").textContent = e.message; }
+    }
+  })();
+</script>
+</body>
+</html>
