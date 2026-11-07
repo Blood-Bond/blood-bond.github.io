@@ -1,35 +1,143 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#b91c1c">
-  <title>Blood Bond — রক্তদাতা খুঁজুন, জীবন বাঁচান</title>
-  <style>
-    :root{--red:#b91c1c;--dark:#7f1d1d;--ink:#1f2937;--muted:#64748b;--bg:#fff7f7;--line:#fee2e2}
-    *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#fff;line-height:1.55}
-    header{background:linear-gradient(135deg,#991b1b,#dc2626);color:#fff;padding:22px 18px 30px}
-    .wrap{max-width:900px;margin:auto;padding:0 16px}.brand{font-size:25px;font-weight:800;letter-spacing:.2px}.tag{opacity:.95;margin-top:5px}
-    nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}nav button{border:1px solid #ffffff80;background:#ffffff18;color:#fff;border-radius:999px;padding:9px 14px;font-weight:700}
-    nav button.active{background:#fff;color:var(--dark)}
-    main{padding:22px 0 50px}.hero{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:18px}
-    h1{font-size:25px;margin:0 0 8px;color:var(--dark)}h2{font-size:20px;margin:0 0 14px;color:var(--dark)}
-    p{margin:7px 0}.muted{color:var(--muted);font-size:14px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
-    .card{border:1px solid #e5e7eb;border-radius:16px;padding:18px;margin:14px 0;background:#fff}
-    label{display:block;font-weight:700;font-size:14px;margin:12px 0 5px}
-    input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit;background:#fff}
-    textarea{min-height:85px;resize:vertical}.btn{border:0;background:var(--red);color:white;padding:12px 18px;border-radius:10px;font-weight:800;font-size:15px;margin-top:15px;width:100%}
-    .btn.secondary{background:#7f1d1d}.btn:disabled{opacity:.55}
-    .notice{padding:12px;border-radius:10px;background:#fff7ed;color:#9a3412;font-size:13px;margin-top:12px}
-    .success{background:#f0fdf4;color:#166534}.error{background:#fef2f2;color:#991b1b}
-    .hidden{display:none}.result{border:1px solid var(--line);border-radius:12px;padding:13px;margin:10px 0}
-    .blood{display:inline-block;background:#fee2e2;color:#991b1b;font-weight:900;padding:3px 9px;border-radius:8px}
-    footer{text-align:center;padding:22px;color:var(--muted);font-size:13px;background:#fff7f7}
-    a{color:#991b1b} .small{font-size:12px;color:var(--muted)}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#b91c1c">
+<title>Blood Bond — রক্তদাতা খুঁজুন, জীবন বাঁচান</title>
+
+<style>
+:root {
+  --red:#b91c1c;
+  --dark:#7f1d1d;
+  --ink:#1f2937;
+  --muted:#64748b;
+  --bg:#fff7f7;
+  --line:#fee2e2;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--ink);
+  background:#fff;
+  line-height:1.55;
+}
+header {
+  background:linear-gradient(135deg,#991b1b,#dc2626);
+  color:#fff;
+  padding:22px 18px 30px;
+}
+.wrap { max-width:900px; margin:auto; padding:0 16px; }
+.brand { font-size:25px; font-weight:800; }
+.tag { opacity:.95; margin-top:5px; }
+nav {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:20px;
+}
+nav button {
+  border:1px solid #ffffff80;
+  background:#ffffff18;
+  color:#fff;
+  border-radius:999px;
+  padding:9px 14px;
+  font-weight:700;
+}
+nav button.active { background:#fff; color:var(--dark); }
+main { padding:22px 0 50px; }
+.hero {
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:22px;
+  margin-bottom:18px;
+}
+h1 { font-size:25px; margin:0 0 8px; color:var(--dark); }
+h2 { font-size:20px; margin:0 0 14px; color:var(--dark); }
+p { margin:7px 0; }
+.muted { color:var(--muted); font-size:14px; }
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:12px;
+}
+.card {
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  padding:18px;
+  margin:14px 0;
+  background:#fff;
+}
+label {
+  display:block;
+  font-weight:700;
+  font-size:14px;
+  margin:12px 0 5px;
+}
+input,select,textarea {
+  width:100%;
+  padding:12px;
+  border:1px solid #cbd5e1;
+  border-radius:10px;
+  font:inherit;
+  background:#fff;
+}
+textarea { min-height:85px; resize:vertical; }
+.btn {
+  border:0;
+  background:var(--red);
+  color:white;
+  padding:12px 18px;
+  border-radius:10px;
+  font-weight:800;
+  font-size:15px;
+  margin-top:15px;
+  width:100%;
+}
+.btn.secondary { background:#7f1d1d; }
+.btn:disabled { opacity:.55; }
+.notice {
+  padding:12px;
+  border-radius:10px;
+  background:#fff7ed;
+  color:#9a3412;
+  font-size:13px;
+  margin-top:12px;
+}
+.success { background:#f0fdf4; color:#166534; padding:12px; border-radius:10px; margin-top:12px; }
+.error { background:#fef2f2; color:#991b1b; padding:12px; border-radius:10px; margin-top:12px; }
+.hidden { display:none; }
+.result {
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:13px;
+  margin:10px 0;
+}
+.blood {
+  display:inline-block;
+  background:#fee2e2;
+  color:#991b1b;
+  font-weight:900;
+  padding:3px 9px;
+  border-radius:8px;
+}
+footer {
+  text-align:center;
+  padding:22px;
+  color:var(--muted);
+  font-size:13px;
+  background:#fff7f7;
+}
+a { color:#991b1b; }
+.small { font-size:12px; color:var(--muted); }
+</style>
 </head>
+
 <body>
+
 <header>
   <div class="wrap">
     <div class="brand">🩸 Blood Bond</div>
@@ -42,133 +150,431 @@
     </nav>
   </div>
 </header>
+
 <main class="wrap">
-  <section id="home" class="panel">
-    <div class="hero">
-      <h1>এক ব্যাগ রক্ত, একটি নতুন আশা।</h1>
-      <p>Blood Bond হলো রক্তদাতা ও জরুরি রক্তপ্রয়োজন এমন মানুষদের সংযুক্ত করার একটি উদ্যোগ। আমরা প্রথমে বগুড়া জেলা দিয়ে শুরু করছি।</p>
-      <p class="muted">Your blood can give someone another chance at life.</p>
-    </div>
-    <div class="grid">
-      <div class="card"><h2>❤️ রক্তদাতা হোন</h2><p>আপনার তথ্য দিয়ে স্বেচ্ছায় রক্তদাতার তালিকায় যুক্ত হোন।</p><button class="btn" onclick="showTab('donor')">নিবন্ধন করুন</button></div>
-      <div class="card"><h2>🆘 রক্তের অনুরোধ</h2><p>জরুরি প্রয়োজনে রক্তের অনুরোধ জমা দিন।</p><button class="btn secondary" onclick="showTab('request')">অনুরোধ পাঠান</button></div>
-      <div class="card"><h2>🔎 রক্তদাতা খুঁজুন</h2><p>রক্তের গ্রুপ ও জেলা অনুযায়ী অনুমোদিত দাতা খুঁজুন।</p><button class="btn" onclick="showTab('search')">খুঁজুন</button></div>
-    </div>
-    <div class="notice">জরুরি অবস্থায় শুধু এই ওয়েবসাইটের ওপর নির্ভর করবেন না। হাসপাতাল/ব্লাড ব্যাংকের সঙ্গে যোগাযোগ করুন এবং রক্তদানের আগে চিকিৎসকের পরামর্শ নিন।</div>
-  </section>
 
-  <section id="donor" class="panel hidden">
-    <div class="card">
-      <h2>রক্তদাতা নিবন্ধন</h2>
-      <p class="muted">আপনার তথ্য যাচাইয়ের পর তালিকায় প্রকাশ করা হবে।</p>
-      <form id="donorForm">
-        <label>আপনার নাম *</label><input name="name" required maxlength="80" placeholder="পূর্ণ নাম">
-        <div class="grid">
-          <div><label>মোবাইল নম্বর *</label><input name="phone" required type="tel" maxlength="20" placeholder="01XXXXXXXXX"></div>
-          <div><label>WhatsApp নম্বর (ঐচ্ছিক)</label><input name="whatsapp" type="tel" maxlength="20" placeholder="01XXXXXXXXX"></div>
-        </div>
-        <div class="grid">
-          <div><label>রক্তের গ্রুপ *</label><select name="blood_group" required><option value="">বেছে নিন</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
-          <div><label>জেলা *</label><input name="district" required value="Bogura" placeholder="যেমন: Bogura"></div>
-        </div>
-        <label>উপজেলা *</label><input name="upazila" required placeholder="যেমন: Bogura Sadar">
-        <label><input type="checkbox" name="consent_public" required style="width:auto"> আমার নাম, ফোন নম্বর ও রক্তের গ্রুপ অনুমোদনের পর রক্তদাতা খোঁজার ফলাফলে দেখানো যাবে—আমি সম্মতি দিচ্ছি।</label>
-        <button class="btn" type="submit">নিবন্ধন জমা দিন</button>
-      </form>
-      <div id="donorMsg" aria-live="polite"></div>
-    </div>
-  </section>
+<section id="home" class="panel">
+  <div class="hero">
+    <h1>এক ব্যাগ রক্ত, একটি নতুন আশা।</h1>
+    <p>Blood Bond হলো রক্তদাতা ও জরুরি রক্তপ্রয়োজন এমন মানুষদের সংযুক্ত করার একটি উদ্যোগ। আমরা প্রথমে বগুড়া জেলা দিয়ে শুরু করছি।</p>
+    <p class="muted">Your blood can give someone another chance at life.</p>
+  </div>
 
-  <section id="request" class="panel hidden">
+  <div class="grid">
     <div class="card">
-      <h2>জরুরি রক্তের অনুরোধ</h2>
-      <form id="requestForm">
-        <label>রোগীর নাম *</label><input name="patient_name" required maxlength="80">
-        <label>যোগাযোগের মোবাইল নম্বর *</label><input name="contact_phone" required type="tel" maxlength="20">
-        <div class="grid">
-          <div><label>রক্তের গ্রুপ *</label><select name="blood_group" required><option value="">বেছে নিন</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
-          <div><label>কত ইউনিট লাগবে? *</label><input name="units" type="number" min="1" max="20" value="1" required></div>
-        </div>
-        <div class="grid">
-          <div><label>জেলা *</label><input name="district" required value="Bogura"></div>
-          <div><label>উপজেলা *</label><input name="upazila" required></div>
-        </div>
-        <label>হাসপাতালের নাম ও ঠিকানা *</label><input name="hospital" required maxlength="160">
-        <label>কখন রক্ত প্রয়োজন? *</label><input name="needed_at" type="datetime-local" required>
-        <label>অতিরিক্ত তথ্য (ঐচ্ছিক)</label><textarea name="details" maxlength="1000" placeholder="প্রয়োজনীয় তথ্য লিখুন"></textarea>
-        <button class="btn" type="submit">অনুরোধ জমা দিন</button>
-      </form>
-      <div id="requestMsg" aria-live="polite"></div>
+      <h2>❤️ রক্তদাতা হোন</h2>
+      <p>আপনার তথ্য দিয়ে স্বেচ্ছায় রক্তদাতার তালিকায় যুক্ত হোন।</p>
+      <button class="btn" onclick="showTab('donor')">নিবন্ধন করুন</button>
     </div>
-  </section>
 
-  <section id="search" class="panel hidden">
     <div class="card">
-      <h2>রক্তদাতা খুঁজুন</h2>
+      <h2>🆘 রক্তের অনুরোধ</h2>
+      <p>জরুরি প্রয়োজনে রক্তের অনুরোধ জমা দিন।</p>
+      <button class="btn secondary" onclick="showTab('request')">অনুরোধ পাঠান</button>
+    </div>
+
+    <div class="card">
+      <h2>🔎 রক্তদাতা খুঁজুন</h2>
+      <p>রক্তের গ্রুপ ও জেলা অনুযায়ী অনুমোদিত দাতা খুঁজুন।</p>
+      <button class="btn" onclick="showTab('search')">খুঁজুন</button>
+    </div>
+  </div>
+
+  <div class="notice">
+    জরুরি অবস্থায় শুধু এই ওয়েবসাইটের ওপর নির্ভর করবেন না। হাসপাতাল বা ব্লাড ব্যাংকের সঙ্গেও যোগাযোগ করুন।
+  </div>
+</section>
+
+<!-- DONOR REGISTRATION -->
+<section id="donor" class="panel hidden">
+  <div class="card">
+    <h2>রক্তদাতা নিবন্ধন</h2>
+    <p class="muted">আপনার তথ্য যাচাইয়ের পর অনুমোদিত হলে তালিকায় প্রকাশ করা হবে।</p>
+
+    <form id="donorForm">
+      <label>আপনার নাম *</label>
+      <input name="name" required maxlength="80" placeholder="পূর্ণ নাম">
+
       <div class="grid">
-        <div><label>রক্তের গ্রুপ</label><select id="searchGroup"><option value="">সব গ্রুপ</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
-        <div><label>জেলা</label><input id="searchDistrict" value="Bogura" placeholder="জেলার নাম"></div>
+        <div>
+          <label>মোবাইল নম্বর *</label>
+          <input name="phone" required type="tel" maxlength="20" placeholder="01XXXXXXXXX">
+        </div>
+        <div>
+          <label>WhatsApp নম্বর (ঐচ্ছিক)</label>
+          <input name="whatsapp" type="tel" maxlength="20" placeholder="01XXXXXXXXX">
+        </div>
       </div>
-      <button class="btn" id="searchBtn">দাতা খুঁজুন</button>
-      <div id="searchMsg" aria-live="polite"></div><div id="results"></div>
+
+      <div class="grid">
+        <div>
+          <label>রক্তের গ্রুপ *</label>
+          <select name="blood_group" required>
+            <option value="">বেছে নিন</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>AB+</option><option>AB-</option>
+            <option>O+</option><option>O-</option>
+          </select>
+        </div>
+        <div>
+          <label>জেলা *</label>
+          <input name="district" required value="Bogura">
+        </div>
+      </div>
+
+      <label>উপজেলা *</label>
+      <select name="upazila" required>
+        <option value="">উপজেলা বেছে নিন</option>
+        <option>বগুড়া সদর</option>
+        <option>কাহালু</option>
+        <option>শিবগঞ্জ</option>
+        <option>গাবতলী</option>
+        <option>সোনাতলা</option>
+        <option>ধুনট</option>
+        <option>আদমদীঘি</option>
+        <option>দুপচাঁচিয়া</option>
+        <option>নন্দীগ্রাম</option>
+        <option>সারিয়াকান্দি</option>
+        <option>শাজাহানপুর</option>
+        <option>শেরপুর</option>
+        <option>মোকামতলা</option>
+      </select>
+
+      <label>
+        <input type="checkbox" name="consent_public" required style="width:auto">
+        আমার নাম, ফোন নম্বর ও রক্তের গ্রুপ অনুমোদনের পর রক্তদাতা খোঁজার ফলাফলে দেখানো যাবে—আমি সম্মতি দিচ্ছি।
+      </label>
+
+      <button class="btn" type="submit">নিবন্ধন জমা দিন</button>
+    </form>
+
+    <div id="donorMsg" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- BLOOD REQUEST -->
+<section id="request" class="panel hidden">
+  <div class="card">
+    <h2>জরুরি রক্তের অনুরোধ</h2>
+
+    <form id="requestForm">
+      <label>রোগীর নাম *</label>
+      <input name="patient_name" required maxlength="80">
+
+      <label>যোগাযোগের মোবাইল নম্বর *</label>
+      <input name="contact_phone" required type="tel" maxlength="20" placeholder="01XXXXXXXXX">
+
+      <div class="grid">
+        <div>
+          <label>রক্তের গ্রুপ *</label>
+          <select name="blood_group" required>
+            <option value="">বেছে নিন</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>AB+</option><option>AB-</option>
+            <option>O+</option><option>O-</option>
+          </select>
+        </div>
+
+        <div>
+          <label>কত ইউনিট লাগবে? *</label>
+          <input name="units" type="number" min="1" max="20" value="1" required>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label>জেলা *</label>
+          <input name="district" required value="Bogura">
+        </div>
+
+        <div>
+          <label>উপজেলা *</label>
+          <select name="upazila" required>
+            <option value="">উপজেলা বেছে নিন</option>
+            <option>বগুড়া সদর</option>
+            <option>কাহালু</option>
+            <option>শিবগঞ্জ</option>
+            <option>গাবতলী</option>
+            <option>সোনাতলা</option>
+            <option>ধুনট</option>
+            <option>আদমদীঘি</option>
+            <option>দুপচাঁচিয়া</option>
+            <option>নন্দীগ্রাম</option>
+            <option>সারিয়াকান্দি</option>
+            <option>শাজাহানপুর</option>
+            <option>শেরপুর</option>
+            <option>মোকামতলা</option>
+          </select>
+        </div>
+      </div>
+
+      <label>হাসপাতালের নাম ও ঠিকানা *</label>
+      <input name="hospital" required maxlength="160" placeholder="হাসপাতালের নাম ও ঠিকানা">
+
+      <label>কখন রক্ত প্রয়োজন? *</label>
+      <input name="needed_at" type="datetime-local" required>
+
+      <label>রক্ত কেন প্রয়োজন? *</label>
+      <select name="blood_reason" required>
+        <option value="">কারণ বেছে নিন</option>
+        <option>অপারেশন</option>
+        <option>সিজার</option>
+        <option>রক্তশূন্যতা</option>
+        <option>থ্যালাসেমিয়া</option>
+        <option>দুর্ঘটনা</option>
+        <option>প্রসবকালীন জরুরি অবস্থা</option>
+        <option>ক্যানসার বা কেমোথেরাপি</option>
+        <option>অন্যান্য</option>
+      </select>
+
+      <label>হিমোগ্লোবিনের মাত্রা (ঐচ্ছিক)</label>
+      <input name="hemoglobin" type="number" min="1" max="25" step="0.1" placeholder="যেমন: 7.5">
+      <p class="small">রিপোর্টে থাকা Hb-এর মাত্রা g/dL এককে লিখুন। রিপোর্ট না থাকলে ফাঁকা রাখুন।</p>
+
+      <label>অতিরিক্ত তথ্য (ঐচ্ছিক)</label>
+      <textarea name="extra_details" maxlength="1000" placeholder="রোগীর অবস্থা বা অন্যান্য প্রয়োজনীয় তথ্য"></textarea>
+
+      <button class="btn" type="submit">অনুরোধ জমা দিন</button>
+    </form>
+
+    <div id="requestMsg" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- DONOR SEARCH -->
+<section id="search" class="panel hidden">
+  <div class="card">
+    <h2>রক্তদাতা খুঁজুন</h2>
+
+    <div class="grid">
+      <div>
+        <label>রক্তের গ্রুপ</label>
+        <select id="searchGroup">
+          <option value="">সব গ্রুপ</option>
+          <option>A+</option><option>A-</option>
+          <option>B+</option><option>B-</option>
+          <option>AB+</option><option>AB-</option>
+          <option>O+</option><option>O-</option>
+        </select>
+      </div>
+
+      <div>
+        <label>জেলা</label>
+        <input id="searchDistrict" value="Bogura" placeholder="জেলার নাম">
+      </div>
     </div>
-  </section>
+
+    <button class="btn" id="searchBtn">দাতা খুঁজুন</button>
+    <div id="searchMsg" aria-live="polite"></div>
+    <div id="results"></div>
+  </div>
+</section>
+
 </main>
-<footer>Blood Bond · মানবতার বন্ধনে রক্তের সন্ধান<br><span class="small">এই সাইটটি প্রাথমিক সংস্করণ। তথ্য প্রকাশের আগে যাচাই ও নিরাপত্তা ব্যবস্থা প্রয়োজন।</span></footer>
+
+<footer>
+  Blood Bond · মানবতার বন্ধনে রক্তের সন্ধান
+  <br>
+  <span class="small">জরুরি চিকিৎসার ক্ষেত্রে হাসপাতাল ও চিকিৎসকের পরামর্শ নিন।</span>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-  // SETUP: Replace these two placeholders with your Supabase Project URL and anon/publishable key.
-  // Never put your service_role key or database password in this file.
 const SUPABASE_URL = "https://bkkityifiuvotwirwcqz.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_rGH4uYPFyQlY0Kkd-LCYkA_1bngDwRS";
-  let db = null;
-  const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("PASTE_") && !SUPABASE_ANON_KEY.includes("PASTE_");
-  if (configured && window.supabase) db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  function showTab(id){
-    document.querySelectorAll(".panel").forEach(s=>s.classList.add("hidden"));
-    document.getElementById(id).classList.remove("hidden");
-    document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));
-    window.scrollTo({top:0,behavior:"smooth"});
+let db = null;
+
+if (window.supabase) {
+  db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+}
+
+function showTab(id) {
+  document.querySelectorAll(".panel").forEach(section => {
+    section.classList.add("hidden");
+  });
+
+  document.getElementById(id).classList.remove("hidden");
+
+  document.querySelectorAll("nav button").forEach(button => {
+    button.classList.toggle("active", button.dataset.tab === id);
+  });
+
+  window.scrollTo({ top:0, behavior:"smooth" });
+}
+
+document.querySelectorAll("nav button").forEach(button => {
+  button.addEventListener("click", () => showTab(button.dataset.tab));
+});
+
+function message(id, text, kind = "notice") {
+  const element = document.getElementById(id);
+  element.className = kind;
+  element.textContent = text;
+}
+
+function ready(id) {
+  if (!db) {
+    message(id, "ডেটাবেস সংযোগ পাওয়া যায়নি। পেজটি রিফ্রেশ করে আবার চেষ্টা করুন।", "error");
+    return false;
   }
-  document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
-  function message(id,text,kind="notice"){const el=document.getElementById(id);el.className=kind;el.textContent=text;}
-  function ready(id){if(!db){message(id,"ওয়েবসাইটের ডেটাবেস সংযোগ এখনো সেট করা হয়নি। Supabase URL ও anon/publishable key যোগ করার পর কাজ করবে।");return false;}return true;}
-  function values(form){return Object.fromEntries(new FormData(form).entries());}
+  return true;
+}
 
-  document.getElementById("donorForm").addEventListener("submit",async e=>{
-    e.preventDefault(); if(!ready("donorMsg"))return;
-    const f=e.currentTarget, v=values(f); v.consent_public=true;
-    const {error}=await db.from("donors").insert([v]);
-    if(error)message("donorMsg","জমা দেওয়া যায়নি: "+error.message,"error");
-    else{message("donorMsg","ধন্যবাদ! আপনার নিবন্ধন জমা হয়েছে। যাচাইয়ের পর অনুমোদিত হলে তালিকায় দেখা যাবে।","success");f.reset();}
+function values(form) {
+  return Object.fromEntries(new FormData(form).entries());
+}
+
+// DONOR SUBMISSION
+document.getElementById("donorForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  if (!ready("donorMsg")) return;
+
+  const form = event.currentTarget;
+  const button = form.querySelector('button[type="submit"]');
+  const data = values(form);
+
+  data.consent_public = true;
+
+  button.disabled = true;
+  button.textContent = "জমা হচ্ছে...";
+
+  try {
+    const { error } = await db.from("donors").insert([data]);
+
+    if (error) {
+      message("donorMsg", "জমা দেওয়া যায়নি: " + error.message, "error");
+    } else {
+      message(
+        "donorMsg",
+        "ধন্যবাদ! আপনার নিবন্ধন জমা হয়েছে। যাচাইয়ের পর অনুমোদিত হলে তালিকায় দেখা যাবে।",
+        "success"
+      );
+      form.reset();
+    }
+  } catch (error) {
+    message("donorMsg", "সমস্যা হয়েছে। আবার চেষ্টা করুন।", "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = "নিবন্ধন জমা দিন";
+  }
+});
+
+// BLOOD REQUEST SUBMISSION
+document.getElementById("requestForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  if (!ready("requestMsg")) return;
+
+  const form = event.currentTarget;
+  const button = form.querySelector('button[type="submit"]');
+  const data = values(form);
+
+  const reason = data.blood_reason;
+  const hb = data.hemoglobin;
+  const extra = data.extra_details;
+
+  data.details =
+    "রক্তের প্রয়োজনের কারণ: " + reason +
+    "\nহিমোগ্লোবিন: " + (hb ? hb + " g/dL" : "উল্লেখ নেই") +
+    "\nঅতিরিক্ত তথ্য: " + (extra || "নেই");
+
+  delete data.blood_reason;
+  delete data.hemoglobin;
+  delete data.extra_details;
+
+  data.units = Number(data.units);
+
+  try {
+    data.needed_at = new Date(data.needed_at).toISOString();
+  } catch (error) {
+    message("requestMsg", "সঠিক তারিখ ও সময় নির্বাচন করুন।", "error");
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "জমা হচ্ছে...";
+
+  try {
+    const { error } = await db.from("blood_requests").insert([data]);
+
+    if (error) {
+      message("requestMsg", "অনুরোধ জমা দেওয়া যায়নি: " + error.message, "error");
+    } else {
+      message(
+        "requestMsg",
+        "আপনার অনুরোধ জমা হয়েছে। দ্রুত হাসপাতাল বা ব্লাড ব্যাংকের সঙ্গেও যোগাযোগ করুন।",
+        "success"
+      );
+      form.reset();
+    }
+  } catch (error) {
+    message("requestMsg", "সমস্যা হয়েছে। আবার চেষ্টা করুন।", "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = "অনুরোধ জমা দিন";
+  }
+});
+
+// PUBLIC DONOR SEARCH
+document.getElementById("searchBtn").addEventListener("click", async () => {
+  if (!ready("searchMsg")) return;
+
+  const group = document.getElementById("searchGroup").value || null;
+  const district = document.getElementById("searchDistrict").value.trim() || null;
+
+  message("searchMsg", "খোঁজা হচ্ছে...");
+  document.getElementById("results").innerHTML = "";
+
+  const { data, error } = await db.rpc("search_public_donors", {
+    p_blood_group:group,
+    p_district:district
   });
-  document.getElementById("requestForm").addEventListener("submit",async e=>{
-    e.preventDefault();if(!ready("requestMsg"))return;
-    const f=e.currentTarget,v=values(f);v.units=Number(v.units);v.needed_at=new Date(v.needed_at).toISOString();
-    const {error}=await db.from("blood_requests").insert([v]);
-    if(error)message("requestMsg","অনুরোধ জমা দেওয়া যায়নি: "+error.message,"error");
-    else{message("requestMsg","আপনার অনুরোধ জমা হয়েছে। দ্রুত হাসপাতাল/ব্লাড ব্যাংকের সঙ্গেও যোগাযোগ করুন।","success");f.reset();}
+
+  if (error) {
+    message("searchMsg", "দাতা খোঁজা যায়নি: " + error.message, "error");
+    return;
+  }
+
+  message(
+    "searchMsg",
+    data && data.length
+      ? `মোট ${data.length} জন অনুমোদিত দাতা পাওয়া গেছে।`
+      : "কোনো অনুমোদিত দাতা পাওয়া যায়নি।"
+  );
+
+  const output = document.getElementById("results");
+
+  (data || []).forEach(donor => {
+    const item = document.createElement("div");
+    item.className = "result";
+
+    const title = document.createElement("strong");
+    title.textContent = donor.name || "রক্তদাতা";
+
+    const blood = document.createElement("span");
+    blood.className = "blood";
+    blood.textContent = donor.blood_group || "";
+
+    const info = document.createElement("p");
+    info.textContent = [donor.district, donor.upazila]
+      .filter(Boolean).join(" · ");
+
+    const phone = document.createElement("p");
+    phone.textContent = "ফোন: " + (donor.phone || "");
+
+    item.append(title, " ", blood, info, phone);
+    output.appendChild(item);
   });
-  document.getElementById("searchBtn").addEventListener("click",async()=>{
-    if(!ready("searchMsg"))return;
-    const group=document.getElementById("searchGroup").value||null;
-    const district=document.getElementById("searchDistrict").value.trim()||null;
-    message("searchMsg","খোঁজা হচ্ছে…");document.getElementById("results").innerHTML="";
-    const {data,error}=await db.rpc("search_public_donors",{p_blood_group:group,p_district:district});
-    if(error){message("searchMsg","দাতা খোঁজা যায়নি: "+error.message,"error");return;}
-    message("searchMsg",data&&data.length?`মোট ${data.length} জন অনুমোদিত দাতা পাওয়া গেছে।`:"কোনো অনুমোদিত দাতা পাওয়া যায়নি।","notice");
-    const out=document.getElementById("results");
-    (data||[]).forEach(d=>{
-      const item=document.createElement("div");item.className="result";
-      const title=document.createElement("strong");title.textContent=d.name||"রক্তদাতা";
-      const blood=document.createElement("span");blood.className="blood";blood.textContent=d.blood_group||"";
-      const info=document.createElement("p");info.textContent=[d.district,d.upazila].filter(Boolean).join(" · ");
-      const phone=document.createElement("p");phone.textContent="ফোন: "+(d.phone||"");
-      item.append(title," ",blood,info,phone);out.appendChild(item);
-    });
-  });
+});
 </script>
+
 </body>
 </html>
