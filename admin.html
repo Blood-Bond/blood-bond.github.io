@@ -1,1 +1,364 @@
 
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blood Bond - Admin Panel</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 18px;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      color: #222;
+    }
+    .container { max-width: 950px; margin: auto; }
+    h1 { color: #c62828; text-align: center; }
+    h2 { color: #333; margin-top: 28px; }
+    .panel, .item {
+      background: white;
+      padding: 18px;
+      margin: 14px 0;
+      border-radius: 12px;
+      box-shadow: 0 2px 9px #00000012;
+    }
+    input {
+      width: 100%;
+      padding: 13px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 14px;
+      margin: 5px 5px 5px 0;
+      border: 0;
+      border-radius: 7px;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:disabled { opacity: .5; }
+    .primary { background: #c62828; }
+    .green { background: #218838; }
+    .red { background: #c62828; }
+    .gray { background: #555; }
+    .hidden { display: none; }
+    .status { font-weight: bold; }
+    .muted { color: #666; font-size: 14px; }
+    #message { padding: 10px; color: #b71c1c; }
+    .item p { margin: 8px 0; overflow-wrap: anywhere; }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .section-title {
+      border-bottom: 2px solid #c62828;
+      padding-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🩸 Blood Bond Admin Panel</h1>
+
+  <section id="loginPanel" class="panel">
+    <h2>অ্যাডমিন লগইন</h2>
+    <input id="email" type="email" placeholder="আপনার ইমেইল">
+    <input id="password" type="password" placeholder="আপনার পাসওয়ার্ড">
+    <button class="primary" id="loginBtn">লগইন করুন</button>
+    <p id="loginMessage"></p>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <div class="panel topbar">
+      <div>
+        <strong>অ্যাডমিন ড্যাশবোর্ড</strong>
+        <p class="muted">Blood Bond পরিচালনা কেন্দ্র</p>
+      </div>
+      <button class="gray" id="logoutBtn">লগআউট</button>
+    </div>
+
+    <div class="panel">
+      <button class="primary" id="refreshBtn">তথ্য রিফ্রেশ করুন</button>
+      <p id="message"></p>
+    </div>
+
+    <h2 class="section-title">🩸 রক্তদাতার আবেদন</h2>
+    <div id="donorsList"></div>
+
+    <h2 class="section-title">🚨 জরুরি রক্তের অনুরোধ</h2>
+    <div id="requestsList"></div>
+  </section>
+</div>
+
+<script>
+  const SUPABASE_URL = "https://bkkityifiuvotwirwcqz.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_rGH4uYPFyQlY0Kkd-LCYkA_1bngDwRS";
+
+  const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  const $ = (id) => document.getElementById(id);
+
+  function safe(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+  }
+
+  function showMessage(text) {
+    $("message").textContent = text;
+  }
+
+  function showLogin(text = "") {
+    $("loginPanel").classList.remove("hidden");
+    $("dashboard").classList.add("hidden");
+    $("loginMessage").textContent = text;
+  }
+
+  function showDashboard() {
+    $("loginPanel").classList.add("hidden");
+    $("dashboard").classList.remove("hidden");
+  }
+
+  async function verifyAdmin() {
+    const { data: { user }, error: authError } =
+      await db.auth.getUser();
+
+    if (authError || !user) {
+      showLogin();
+      return false;
+    }
+
+    const { data, error } = await db
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (error || !data) {
+      await db.auth.signOut();
+      showLogin("এই অ্যাকাউন্টের অ্যাডমিন অনুমতি নেই।");
+      return false;
+    }
+
+    showDashboard();
+    await loadAll();
+    return true;
+  }
+
+  $("loginBtn").addEventListener("click", async () => {
+    const email = $("email").value.trim();
+    const password = $("password").value;
+
+    if (!email || !password) {
+      $("loginMessage").textContent =
+        "ইমেইল ও পাসওয়ার্ড লিখুন।";
+      return;
+    }
+
+    $("loginBtn").disabled = true;
+    $("loginMessage").textContent = "লগইন হচ্ছে...";
+
+    const { error } = await db.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    $("loginBtn").disabled = false;
+
+    if (error) {
+      $("loginMessage").textContent =
+        "লগইন হয়নি: " + error.message;
+      return;
+    }
+
+    await verifyAdmin();
+  });
+
+  $("logoutBtn").addEventListener("click", async () => {
+    await db.auth.signOut();
+    $("donorsList").innerHTML = "";
+    $("requestsList").innerHTML = "";
+    showLogin("আপনি লগআউট করেছেন।");
+  });
+
+  $("refreshBtn").addEventListener("click", loadAll);
+
+  async function loadAll() {
+    showMessage("তথ্য লোড হচ্ছে...");
+
+    const { data: donors, error: donorError } = await db
+      .from("donors")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    const { data: requests, error: requestError } = await db
+      .from("blood_requests")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (donorError || requestError) {
+      showMessage(
+        "তথ্য লোড হয়নি। অনুমতি বা নেটওয়ার্ক পরীক্ষা করুন। " +
+        (donorError?.message || requestError?.message || "")
+      );
+      return;
+    }
+
+    renderDonors(donors || []);
+    renderRequests(requests || []);
+    showMessage(
+      "তথ্য আপডেট হয়েছে। রক্তদাতা: " +
+      donors.length + " | রক্তের অনুরোধ: " + requests.length
+    );
+  }
+
+  function dateText(value) {
+    if (!value) return "উল্লেখ নেই";
+    const date = new Date(value);
+    return isNaN(date.getTime())
+      ? safe(value)
+      : date.toLocaleString("bn-BD");
+  }
+
+  function renderDonors(rows) {
+    const target = $("donorsList");
+
+    if (!rows.length) {
+      target.innerHTML =
+        '<div class="panel">এখনো কোনো রক্তদাতার আবেদন নেই।</div>';
+      return;
+    }
+
+    target.innerHTML = rows.map(d => {
+      const status = d.status || "pending";
+      const actions = status === "pending"
+        ? `<button class="green" data-action="approve-donor" data-id="${safe(d.id)}">অনুমোদন</button>
+           <button class="red" data-action="reject-donor" data-id="${safe(d.id)}">বাতিল</button>`
+        : "";
+
+      return `
+        <div class="item">
+          <p><strong>নাম:</strong> ${safe(d.name)}</p>
+          <p><strong>রক্তের গ্রুপ:</strong> ${safe(d.blood_group)}</p>
+          <p><strong>মোবাইল:</strong> ${safe(d.phone)}</p>
+          <p><strong>WhatsApp:</strong> ${safe(d.whatsapp)}</p>
+          <p><strong>জেলা:</strong> ${safe(d.district)}</p>
+          <p><strong>উপজেলা:</strong> ${safe(d.upazila)}</p>
+          <p><strong>আবেদনের তারিখ:</strong> ${dateText(d.created_at)}</p>
+          <p class="status">অবস্থা: ${safe(status)}</p>
+          ${actions}
+        </div>`;
+    }).join("");
+  }
+
+  function renderRequests(rows) {
+    const target = $("requestsList");
+
+    if (!rows.length) {
+      target.innerHTML =
+        '<div class="panel">এখনো কোনো রক্তের অনুরোধ নেই।</div>';
+      return;
+    }
+
+    target.innerHTML = rows.map(r => {
+      const status = r.status || "pending";
+      const actions = status === "pending"
+        ? `<button class="green" data-action="complete-request" data-id="${safe(r.id)}">সম্পন্ন</button>
+           <button class="red" data-action="reject-request" data-id="${safe(r.id)}">বাতিল</button>`
+        : "";
+
+      return `
+        <div class="item">
+          <p><strong>রোগীর নাম:</strong> ${safe(r.patient_name)}</p>
+          <p><strong>রক্তের গ্রুপ:</strong> ${safe(r.blood_group)}</p>
+          <p><strong>রক্তের পরিমাণ:</strong> ${safe(r.units)}</p>
+          <p><strong>যোগাযোগ:</strong> ${safe(r.contact_phone)}</p>
+          <p><strong>জেলা:</strong> ${safe(r.district)}</p>
+          <p><strong>উপজেলা:</strong> ${safe(r.upazila)}</p>
+          <p><strong>হাসপাতাল:</strong> ${safe(r.hospital)}</p>
+          <p><strong>প্রয়োজনের সময়:</strong> ${dateText(r.needed_at)}</p>
+          <p><strong>বিস্তারিত:</strong> ${safe(r.details)}</p>
+          <p><strong>আবেদনের তারিখ:</strong> ${dateText(r.created_at)}</p>
+          <p class="status">অবস্থা: ${safe(status)}</p>
+          ${actions}
+        </div>`;
+    }).join("");
+  }
+
+  document.addEventListener("click", async (event) => {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+
+    const id = button.dataset.id;
+    const action = button.dataset.action;
+
+    const settings = {
+      "approve-donor": {
+        table: "donors",
+        status: "approved",
+        confirm: "এই রক্তদাতাকে অনুমোদন করবেন?"
+      },
+      "reject-donor": {
+        table: "donors",
+        status: "rejected",
+        confirm: "এই রক্তদাতার আবেদন বাতিল করবেন?"
+      },
+      "complete-request": {
+        table: "blood_requests",
+        status: "completed",
+        confirm: "এই রক্তের অনুরোধ সম্পন্ন হিসেবে চিহ্নিত করবেন?"
+      },
+      "reject-request": {
+        table: "blood_requests",
+        status: "rejected",
+        confirm: "এই রক্তের অনুরোধ বাতিল করবেন?"
+      }
+    };
+
+    const task = settings[action];
+    if (!task || !confirm(task.confirm)) return;
+
+    button.disabled = true;
+    showMessage("পরিবর্তন করা হচ্ছে...");
+
+    const { error } = await db
+      .from(task.table)
+      .update({ status: task.status })
+      .eq("id", id);
+
+    if (error) {
+      button.disabled = false;
+      showMessage("পরিবর্তন হয়নি: " + error.message);
+      return;
+    }
+
+    showMessage("সফলভাবে পরিবর্তন করা হয়েছে।");
+    await loadAll();
+  });
+
+  db.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_OUT" || !session) {
+      showLogin();
+    }
+  });
+
+  verifyAdmin();
+</script>
+</body>
+</html>
